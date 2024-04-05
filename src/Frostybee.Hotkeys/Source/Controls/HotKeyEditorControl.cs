@@ -31,7 +31,7 @@ public class HotKeyEditorControl : TextBox
     /// <summary>
     /// Holds the list of required modifiers. 
     /// </summary>
-    List<ModifierKeys> _minRequiredModifiers = new List<ModifierKeys>
+    List<ModifierKeys> _requiredModifiers = new List<ModifierKeys>
             //{ModifierKeys.Shift, ModifierKeys.Control, ModifierKeys.Alt};
             //{ModifierKeys.Control, ModifierKeys.Alt};
             {ModifierKeys.Control};
@@ -229,7 +229,7 @@ public class HotKeyEditorControl : TextBox
     {
         var expectedModifiers = ModifierKeys.None;
         // Combined the required expectedModifiers 
-        _minRequiredModifiers.ForEach(m => expectedModifiers |= m);
+        _requiredModifiers.ForEach(m => expectedModifiers |= m);
         return (Keyboard.Modifiers.HasFlag(expectedModifiers));
     }
 }
