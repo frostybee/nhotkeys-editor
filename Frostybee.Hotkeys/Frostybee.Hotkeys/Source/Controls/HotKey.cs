@@ -16,8 +16,8 @@ public class HotKey : IEquatable<HotKey>
     private const int VK_CONTROL = 17;
     private const int VK_SHIFT = 16;
     public static HotKey None = new HotKey(Key.None, ModifierKeys.None);
-    public Key Key { get; }
-    public ModifierKeys ModifierKeys { get; }
+    public Key Key { get; } 
+    public ModifierKeys ModifierKeys { get; } 
 
     public HotKey(Key key, ModifierKeys modifierKeys = ModifierKeys.None)
     {
@@ -47,6 +47,8 @@ public class HotKey : IEquatable<HotKey>
 
     public override string ToString()
     {
+        KeyConverter converter = new KeyConverter();
+        //TODO: use the converter instead?
         var sb = new StringBuilder();
         if ((this.ModifierKeys & ModifierKeys.Alt) == ModifierKeys.Alt)
         {
@@ -71,7 +73,8 @@ public class HotKey : IEquatable<HotKey>
             sb.Append("Windows+");
         }
 
-        sb.Append(GetLocalizedKeyString(this.Key));
+        //sb.Append(GetLocalizedKeyString(this.Key));
+        sb.Append(converter.ConvertToString(this.Key));
         return sb.ToString();
     }
 

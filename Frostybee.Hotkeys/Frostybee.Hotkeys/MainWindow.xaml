@@ -18,7 +18,7 @@
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 IsReadOnly="True"
-                IsReadOnlyCaretVisible="False"
+                IsReadOnlyCaretVisible="True"
                 IsUndoEnabled="False" />
         </StackPanel>
     </Grid>

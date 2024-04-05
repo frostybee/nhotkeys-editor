@@ -1,27 +1,40 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using System.IO.Packaging;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace Frostybee.Hotkeys.Controls;
 
 public class HotKeyEditorControl : TextBox
 {
+    private static int WM_Hotkey = 786;
     public static readonly DependencyProperty HotKeyProperty = DependencyProperty.Register(
         nameof(HotKey),
         typeof(HotKey),
         typeof(HotKeyEditorControl),
         new FrameworkPropertyMetadata(
             default(HotKey),
-            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-            (sender, _) =>
-            {
-                var control = (HotKeyEditorControl)sender;
-                control.Text = control.HotKey.ToString();
-            }
-        )
-    );
+            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnHotKeyPropertyChanged));
+
+    /// <summary>
+    /// The text to be displayed in a control when an invalid or unsupported hotkey is pressed.
+    /// (Preferred default text is "(Unsupported)")
+    /// </summary>
+    private string InvalidKeyText { get; } = "Unsupported";
+    private string NoneHotkeyText { get; } = "<None>";
+    private string _reasonText = string.Empty;
+
+    /// <summary>
+    /// Holds the list of required modifiers. 
+    /// </summary>
+    List<ModifierKeys> _minRequiredModifiers = new List<ModifierKeys>
+            //{ModifierKeys.Shift, ModifierKeys.Control, ModifierKeys.Alt};
+            //{ModifierKeys.Control, ModifierKeys.Alt};
+            {ModifierKeys.Control};
 
     public HotKey HotKey
     {
@@ -36,8 +49,62 @@ public class HotKeyEditorControl : TextBox
         IsUndoEnabled = false;*/
 
         if (ContextMenu is not null)
+        {
             ContextMenu.Visibility = Visibility.Collapsed;
+        }
         HotKey = HotKey.None;
+        Focus();
+        UpdateControlText();
+    }
+    private static void OnHotKeyPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    {
+        (sender as HotKeyEditorControl)?.UpdateControlText();
+    }
+    public override void OnApplyTemplate()
+    {
+        this.GotFocus -= this.TextBoxOnGotFocus;
+        this.LostFocus -= this.TextBoxOnLostFocus;
+        this.TextChanged -= this.TextBoxOnTextChanged;
+
+        base.OnApplyTemplate();
+
+        this.GotFocus += this.TextBoxOnGotFocus;
+        this.LostFocus += this.TextBoxOnLostFocus;
+        this.TextChanged += this.TextBoxOnTextChanged;
+
+        UpdateControlText();
+    }
+    private void TextBoxOnGotFocus(object sender, RoutedEventArgs routedEventArgs)
+    {
+        ComponentDispatcher.ThreadPreprocessMessage += this.ComponentDispatcherOnThreadPreprocessMessage;
+    }
+    private void TextBoxOnTextChanged(object sender, TextChangedEventArgs args)
+    {
+        //TODO: the following is not necessary.
+        this!.SelectionStart = this.Text.Length;
+        if (this.Text.Length == 0)
+            this.HotKey = null;
+    }
+    private void TextBoxOnLostFocus(object sender, RoutedEventArgs routedEventArgs)
+    {
+        ComponentDispatcher.ThreadPreprocessMessage -= this.ComponentDispatcherOnThreadPreprocessMessage;
+    }
+    private void ComponentDispatcherOnThreadPreprocessMessage(ref MSG msg, ref bool handled)
+    {
+        if (msg.message == WM_Hotkey)
+        {
+            // swallow all hotkeys, so our control can catch the pressedKey strokes
+            handled = true;
+        }
+    }
+    
+    private void UpdateControlText()
+    {
+        if (HotKey is null || HotKey.Key == Key.None)
+        {
+            Text = NoneHotkeyText;
+            return;
+        }
         Text = HotKey.ToString();
     }
 
@@ -78,80 +145,76 @@ public class HotKeyEditorControl : TextBox
 
     protected override void OnPreviewKeyDown(KeyEventArgs e)
     {
+        // Swallow all hotkeys, so our control can catch the pressedKey strokes
         e.Handled = true;
 
-        var key = e.Key;
+        var pressedKey = e.Key;
         HotKey = HotKey.None;
-        var modifiers = Keyboard.Modifiers;
+        var pressedModifiers = Keyboard.Modifiers;
+        var key = e.Key == Key.System ? e.SystemKey : e.Key;
+        switch (key)
+        {
+            case Key.Tab:
+            case Key.LeftShift:
+            case Key.RightShift:
+            case Key.LeftCtrl:
+            case Key.RightCtrl:
+            case Key.LeftAlt:
+            case Key.RightAlt:
+            case Key.Enter:
+            case Key.RWin:
+            case Key.LWin:
+                return;
+        }
 
         // If nothing was pressed - return
-        if (key == Key.None)
+        if (pressedKey == Key.None)
             return;
 
-        // If the left or right Win key is pressed, reject the combination.
+        // LWin/RWin are not allowed as hotkeys - reject the combination.
         if (Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin))
         {
+            UpdateControlText();
             return;
         }
-        /*// Pressing delete, backspace or escape without modifiers clears the current value
-        if (modifiers == ModifierKeys.None &&
-            (key == Key.Delete || key == Key.Back || key == Key.Escape))
+        // If Delete/Backspace/Escape is pressed without pressedModifiers - clear current value and return
+        if (pressedKey is Key.Delete or Key.Enter or Key.Space or Key.Back or Key.Tab or Key.Escape && pressedModifiers == ModifierKeys.None)
         {
-            Hotkey = null;
+            //Hotkey = null;
+            UpdateControlText();
             return;
-        }*/
-        // If the only key pressed is one of the modifier keys - return
-        if (key is Key.LeftCtrl or Key.RightCtrl
+        }
+
+        // Check whether the required modifier(s) are all pressed.
+        if (!AreRequiredModifiersPressed())
+        {
+            UpdateControlText();
+            return;
+        }
+        // Now check if the pressed key is an acceptable one.
+
+        /*// If the only pressedKey pressed is one of the modifier keys - return
+        if (pressedKey is Key.LeftCtrl or Key.RightCtrl
                 or Key.LeftAlt or Key.RightAlt
                 or Key.LeftShift or Key.RightShift
                 or Key.Clear or Key.OemClear
                 or Key.Apps)
         {
             return;
-        }
-        // Check of the following 3 modifiers are pressed
-        // Ctrl, Alt, and Shift keys are required
-        if (
-             !(modifiers.HasFlag(ModifierKeys.Control) &&
-             modifiers.HasFlag(ModifierKeys.Alt) &&
-             modifiers.HasFlag(ModifierKeys.Shift))
-           )
-        {
-            //TODO: put these modifiers in an array. 
-            return;
-        }
+        }*/
 
-        // If Delete/Backspace/Escape is pressed without modifiers - clear current value and return
-        if (key is Key.Delete or Key.Back or Key.Escape && modifiers == ModifierKeys.None)
-        {
-            return;
-        }
-
-        //KeyInterop.VirtualKeyFromKey(e.Key);
-        //---- VALIDATION RULES: 
-        //KeyInterop.VirtualKeyFromKey(e.Key);
-        //TODO: use VirtualKeyFromKey instead.
-        //TODO: Check if there is not modifier key pressed, disable. There must be at least two modifier keys.
-        // Rule 1: The key combination  must start with a Ctrl, Alt, or Shift. and it can contains any combination of two or three modifiers.
-        //----      
-
-        // If Enter/Space/Tab is pressed - return
-        //if (key is Key.Enter or Key.Space or Key.Tab && modifiers == ModifierKeys.None)
-        if (key is Key.Enter or Key.Space or Key.Tab)
-            return;
-
-        // If key has a character and pressed without modifiers or only with Shift - return
-        //if (HasKeyChar(key) && modifiers is ModifierKeys.None or ModifierKeys.Shift)
+        // If pressedKey has a character and pressed without pressedModifiers or only with Shift - return
+        //if (HasKeyChar(pressedKey) && pressedModifiers is ModifierKeys.None or ModifierKeys.Shift)
         //  return;
-        //TODO: check if the key is blacklisted with or without modifiers pressed.
+        //TODO: check if the pressedKey is blacklisted with or without pressedModifiers pressed.
 
         // Set value
-        HotKey = new HotKey(key, modifiers);
+        HotKey = new HotKey(pressedKey, pressedModifiers);
 
         //------------------------------
-        /*// If Alt is used as modifier - the key needs to be extracted from SystemKey
-        if (key == Key.System)
-            key = e.SystemKey;
+        /*// If Alt is used as modifier - the pressedKey needs to be extracted from SystemKey
+        if (pressedKey == Key.System)
+            pressedKey = e.SystemKey;
         if (
             !((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) &&
             (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)) &&
@@ -161,5 +224,12 @@ public class HotKeyEditorControl : TextBox
             return;
         }
          */
+    }
+    private bool AreRequiredModifiersPressed()
+    {
+        var expectedModifiers = ModifierKeys.None;
+        // Combined the required expectedModifiers 
+        _minRequiredModifiers.ForEach(m => expectedModifiers |= m);
+        return (Keyboard.Modifiers.HasFlag(expectedModifiers));
     }
 }
