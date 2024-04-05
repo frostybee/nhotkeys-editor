@@ -11,6 +11,15 @@ namespace Frostybee.Hotkeys.Controls;
 
 public class HotKeyEditorControl : TextBox
 {
+    public enum RequiredModifiers
+    {
+        None = 0,
+        CtrlShiftAlt,
+        CtrlAlt,
+        CtrlShift,
+        All,
+    }
+
     private static int WM_Hotkey = 786;
     public static readonly DependencyProperty HotKeyProperty = DependencyProperty.Register(
         nameof(HotKey),
@@ -19,6 +28,28 @@ public class HotKeyEditorControl : TextBox
         new FrameworkPropertyMetadata(
             default(HotKey),
             FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnHotKeyPropertyChanged));
+
+    public static readonly DependencyProperty MinAllowedModifiersKeysProperty = DependencyProperty.Register(
+        nameof(MinAllowedModifiersKeys),
+        typeof(RequiredModifiers),
+        typeof(HotKeyEditorControl),
+        new FrameworkPropertyMetadata(
+            //TODO: review/decide what should be assigned as default value.
+            RequiredModifiers.CtrlShiftAlt,
+            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault
+        ));
+
+
+    public static readonly DependencyProperty IsWinKeyAllowedProperty = DependencyProperty.Register(
+        nameof(IsWinKeyAllowed),
+        typeof(bool),
+        typeof(HotKeyEditorControl),
+        new FrameworkPropertyMetadata(
+            false,
+            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault
+        ));
+
+
 
     /// <summary>
     /// The text to be displayed in a control when an invalid or unsupported hotkey is pressed.
@@ -36,11 +67,25 @@ public class HotKeyEditorControl : TextBox
             //{ModifierKeys.Control, ModifierKeys.Alt};
             {ModifierKeys.Control};
 
+    #region Properties
     public HotKey HotKey
     {
         get => (HotKey)GetValue(HotKeyProperty);
         set => SetValue(HotKeyProperty, value);
     }
+    public RequiredModifiers MinAllowedModifiersKeys
+    {
+        get => (RequiredModifiers)GetValue(MinAllowedModifiersKeysProperty);
+        set => SetValue(MinAllowedModifiersKeysProperty, value);
+    }
+
+    public bool IsWinKeyAllowed
+    {
+        get => (bool)GetValue(IsWinKeyAllowedProperty);
+        set => SetValue(IsWinKeyAllowedProperty, value);
+    }
+
+    #endregion
 
     public HotKeyEditorControl()
     {
@@ -97,7 +142,7 @@ public class HotKeyEditorControl : TextBox
             handled = true;
         }
     }
-    
+
     private void UpdateControlText()
     {
         if (HotKey is null || HotKey.Key == Key.None)
@@ -151,7 +196,12 @@ public class HotKeyEditorControl : TextBox
         var pressedKey = e.Key;
         HotKey = HotKey.None;
         var pressedModifiers = Keyboard.Modifiers;
+        var minRequiredModifiers = GetRequiredModifiers();
+
         var key = e.Key == Key.System ? e.SystemKey : e.Key;
+
+        Debug.WriteLine(MinAllowedModifiersKeys);
+
         switch (key)
         {
             case Key.Tab:
@@ -186,11 +236,13 @@ public class HotKeyEditorControl : TextBox
         }
 
         // Check whether the required modifier(s) are all pressed.
-        if (!AreRequiredModifiersPressed())
+        //if (!AreRequiredModifiersPressed())
+        if (!Keyboard.Modifiers.HasFlag(minRequiredModifiers))
         {
             UpdateControlText();
             return;
         }
+
         // Now check if the pressed key is an acceptable one.
 
         /*// If the only pressedKey pressed is one of the modifier keys - return
@@ -225,6 +277,30 @@ public class HotKeyEditorControl : TextBox
         }
          */
     }
+
+    private ModifierKeys GetRequiredModifiers()
+    {
+        var expectedModifiers = ModifierKeys.None;
+        switch (MinAllowedModifiersKeys)
+        {
+            case RequiredModifiers.All:
+            case RequiredModifiers.CtrlShiftAlt:
+                expectedModifiers |= ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt;
+                break;
+            case RequiredModifiers.CtrlAlt:
+                expectedModifiers |= ModifierKeys.Control | ModifierKeys.Alt;
+                break;
+            case RequiredModifiers.CtrlShift:
+                expectedModifiers |= ModifierKeys.Control | ModifierKeys.Shift;
+                break;            
+            default:
+                expectedModifiers = ModifierKeys.None;
+                break;
+        }
+        // TODO: if IsWinKeyAllowed, add it the list so that it can be added to resulting hotkey.
+        return expectedModifiers;
+    }
+
     private bool AreRequiredModifiersPressed()
     {
         var expectedModifiers = ModifierKeys.None;
