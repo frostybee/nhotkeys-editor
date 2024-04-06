@@ -47,34 +47,30 @@ public class HotKey : IEquatable<HotKey>
 
     public override string ToString()
     {
-        KeyConverter converter = new KeyConverter();
-        //TODO: use the converter instead?
         var sb = new StringBuilder();
-        if ((this.ModifierKeys & ModifierKeys.Alt) == ModifierKeys.Alt)
-        {
-            sb.Append(GetLocalizedKeyStringUnsafe(VK_MENU));
-            sb.Append("+");
-        }
 
         if ((this.ModifierKeys & ModifierKeys.Control) == ModifierKeys.Control)
         {
             sb.Append(GetLocalizedKeyStringUnsafe(VK_CONTROL));
-            sb.Append("+");
+            sb.Append('+');
         }
-
+        if ((this.ModifierKeys & ModifierKeys.Alt) == ModifierKeys.Alt)
+        {
+            sb.Append(GetLocalizedKeyStringUnsafe(VK_MENU));
+            sb.Append('+');
+        }
         if ((this.ModifierKeys & ModifierKeys.Shift) == ModifierKeys.Shift)
         {
             sb.Append(GetLocalizedKeyStringUnsafe(VK_SHIFT));
-            sb.Append("+");
+            sb.Append('+');
         }
 
         if ((this.ModifierKeys & ModifierKeys.Windows) == ModifierKeys.Windows)
         {
-            sb.Append("Windows+");
+            sb.Append("Win+");
         }
 
-        //sb.Append(GetLocalizedKeyString(this.Key));
-        sb.Append(converter.ConvertToString(this.Key));
+        sb.Append(GetLocalizedKeyString(this.Key));
         return sb.ToString();
     }
 
