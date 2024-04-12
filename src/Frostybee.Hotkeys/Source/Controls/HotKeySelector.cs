@@ -39,8 +39,8 @@ public class HotKeySelector : TextBox
     /// <summary>
     /// Holds the list of keys that, when pressed, clear the content of this control.
     /// </summary>
-    private readonly List<Key> _clearKeys = [Key.None];
-    private readonly List<Key> _allowedKeys = [Key.None];
+    private readonly List<Key> _clearKeys = new List<Key> { Key.None };
+    private readonly List<Key> _allowedKeys = new List<Key> { Key.None };
 
     #region Fields
     public static readonly DependencyProperty SelectedHotKeyProperty = DependencyProperty.Register(
@@ -117,18 +117,26 @@ public class HotKeySelector : TextBox
         UpdateControlText();
         PopulateClearKeys();
         PopulateAllowedKeys();
+
     }
 
     private void PopulateClearKeys()
     {
         _clearKeys.Clear();
-        _clearKeys.AddRange(
+        _clearKeys.AddRange(new List<Key> {
+             Key.Escape, Key.Space,
+             Key.Back, Key.Delete, Key.Tab,
+             Key.Insert, Key.Scroll,
+             Key.NumLock, Key.Return,
+             Key.Pause, Key.Enter, Key.Clear
+        });
+        /*_clearKeys.AddRange(
             [Key.Escape, Key.Space,
              Key.Back, Key.Delete, Key.Tab,
              Key.Insert, Key.Scroll,
              Key.NumLock, Key.Return,
-             Key.Pause, Key.Enter, Key.Clear]
-        );
+             Key.Pause, Key.Enter, Key.Clear].to
+        );*/
     }
 
     /// <summary>
@@ -139,7 +147,7 @@ public class HotKeySelector : TextBox
         if (RangeOfAllowedKeys == AllowedKeysType.LettersDigitsFunctions)
         {
             PopulateLettersDigitsFun();
-        }        
+        }
     }
 
     private void PopulateLettersDigitsFun()
@@ -266,6 +274,11 @@ public class HotKeySelector : TextBox
             UpdateControlText();
             return;
         }
+        if (ExcludedKeys.ToList().Contains((int)pressedKey))
+        {
+            UpdateControlText();
+            return;
+        }
         if (RangeOfAllowedKeys == AllowedKeysType.LettersDigitsFunctions)
         {
             // If the pressed key is not one of the whitelisted keys - return
@@ -274,7 +287,7 @@ public class HotKeySelector : TextBox
                 UpdateControlText();
                 return;
             }
-        }       
+        }
 
         // We now have a valid hotkey.
         SelectedHotKey = new HotKey(pressedKey, pressedModifiers);
@@ -302,3 +315,4 @@ public class HotKeySelector : TextBox
         return expectedModifiers;
     }
 }
+
