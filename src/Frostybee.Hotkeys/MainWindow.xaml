@@ -20,7 +20,8 @@
                 IsReadOnly="True"
                 IsReadOnlyCaretVisible="True"
                 IsUndoEnabled="False"
-                MinRequiredModifiers="CtrlShiftAlt"
+                ExcludedKeys="{Binding }"
+                MinRequiredModifiers="CtrlAlt"
                 RangeOfAllowedKeys="All" />
         </StackPanel>
     </Grid>
