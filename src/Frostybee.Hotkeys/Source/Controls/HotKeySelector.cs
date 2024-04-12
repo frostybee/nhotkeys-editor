@@ -244,7 +244,7 @@ public class HotKeySelector : TextBox
             UpdateControlText();
             return;
         }
-        // If the pressed key is any of the following - return
+        // If the pressed key is any of the following with a modifier - return
         switch (pressedKey)
         {
             case Key.Tab:
@@ -255,6 +255,7 @@ public class HotKeySelector : TextBox
             case Key.LeftAlt:
             case Key.RightAlt:
             case Key.Clear:
+            case Key.Insert:
             case Key.OemClear:
             case Key.Apps:
                 UpdateControlText();
