@@ -1,7 +1,7 @@
-﻿<Application x:Class="Frostybee.NHotkeys.App"
+﻿<Application x:Class="NHotkeysEditor.Wpf.Demo.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Frostybee.NHotkeys"
+             xmlns:local="clr-namespace:NHotkeysEditor.Wpf.Demo"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

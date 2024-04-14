@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FrostyBee.Hotkeys.Native;
+namespace NHotkeysEditor.NativeApi;
 
 internal class NativeMethods
 {

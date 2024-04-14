@@ -1,4 +1,4 @@
-﻿using FrostyBee.Hotkeys.Native;
+﻿using NHotkeysEditor.NativeApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Frostybee.NHotkeys.Controls;
+namespace NHotkeysEditor.Controls;
 
 [Serializable]
 public class HotKey : IEquatable<HotKey>
