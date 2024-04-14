@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>    
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+    <RootNamespace>Frostybee.NHotkeys</RootNamespace>
+    <BaseOutputPath>..\bin</BaseOutputPath>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>1.0.1</Version>
+    <Authors>FrostyBee</Authors>
+    <Company>FrostyBee</Company>
+    <Copyright>Copyright (C) 2024 FrostyBee</Copyright>
+    <RepositoryUrl>https://github.com/frostybee/nhotkeys-editor</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditLevel>moderate</NuGetAuditLevel>    
+  </PropertyGroup>
+</Project>

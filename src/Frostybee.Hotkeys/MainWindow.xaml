@@ -1,12 +1,12 @@
 ﻿<Window
-    x:Class="Frostybee.Hotkeys.MainWindow"
+    x:Class="Frostybee.NHotkeys.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:fb="clr-namespace:Frostybee.Hotkeys.Controls"
-    xmlns:local="clr-namespace:Frostybee.Hotkeys"
+    xmlns:fb="clr-namespace:Frostybee.NHotkeys.Controls"
+    xmlns:local="clr-namespace:Frostybee.NHotkeys"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Hotkeys Editor"
+    Title="NHotkeys Editor"
     Width="800"
     Height="450"
     mc:Ignorable="d">
@@ -17,10 +17,10 @@
                 Height="40"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
+                ExcludedKeys="{Binding}"
                 IsReadOnly="True"
                 IsReadOnlyCaretVisible="True"
                 IsUndoEnabled="False"
-                ExcludedKeys="{Binding }"
                 MinRequiredModifiers="CtrlAlt"
                 RangeOfAllowedKeys="All" />
         </StackPanel>

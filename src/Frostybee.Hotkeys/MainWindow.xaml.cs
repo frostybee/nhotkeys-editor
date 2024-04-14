@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Frostybee.Hotkeys;
+namespace Frostybee.NHotkeys;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

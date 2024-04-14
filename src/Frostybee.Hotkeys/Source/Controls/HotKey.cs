@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Frostybee.Hotkeys.Controls;
+namespace Frostybee.NHotkeys.Controls;
 
 [Serializable]
 public class HotKey : IEquatable<HotKey>

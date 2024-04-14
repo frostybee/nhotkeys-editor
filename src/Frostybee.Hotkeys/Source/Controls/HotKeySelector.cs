@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 
-namespace Frostybee.Hotkeys.Controls;
+namespace Frostybee.NHotkeys.Controls;
 
 public class HotKeySelector : TextBox
 {

@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace Frostybee.Hotkeys;
+namespace Frostybee.NHotkeys;
 
 /// <summary>
 /// Interaction logic for App.xaml
