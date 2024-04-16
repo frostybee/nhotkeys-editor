@@ -16,10 +16,25 @@ namespace NHotkeysEditor.Wpf.Demo
     /// </summary>
     public partial class MainWindow : Window
     {
+        public List<Key> ExcludedKeys { get; private set; } = new List<Key>();
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
+            PopulateExcludedKeys();
+        }
+
+        private void PopulateExcludedKeys()
+        {
+            ExcludedKeys.AddRange(
+                new Key[] {
+                   Key.Up,
+                   Key.Down,
+                   Key.Left,
+                   Key.Right,
+                   Key.PageDown,
+                   Key.PageUp,
+                });
         }
     }
 }

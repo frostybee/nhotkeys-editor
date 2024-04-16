@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
-using System.IO.Packaging;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,9 +8,10 @@ using System.Windows.Interop;
 
 namespace NHotkeysEditor.Controls;
 
+
 public class HotKeySelector : TextBox
 {
-    private static int WM_Hotkey = 786;
+    private static readonly int WM_Hotkey = 786;
 
     public enum RequiredModifiersType
     {
@@ -39,8 +39,8 @@ public class HotKeySelector : TextBox
     /// <summary>
     /// Holds the list of keys that, when pressed, clear the content of this control.
     /// </summary>
-    private readonly List<Key> _clearKeys = new List<Key> { Key.None };
-    private readonly List<Key> _allowedKeys = new List<Key> { Key.None };
+    private readonly List<Key> _clearKeys = new();
+    private readonly List<Key> _allowedKeys = new();
 
     #region Fields
     public static readonly DependencyProperty SelectedHotKeyProperty = DependencyProperty.Register(
@@ -53,12 +53,12 @@ public class HotKeySelector : TextBox
 
     public static DependencyProperty ExcludedKeysProperty = DependencyProperty.Register(
         nameof(ExcludedKeys),
-        typeof(int[]),
-        typeof(HotKeySelector), new PropertyMetadata(new int[0]));
+        typeof(List<Key>),
+        typeof(HotKeySelector), new PropertyMetadata(new List<Key> { Key.None}));
 
-    public int[] ExcludedKeys
+    public List<Key> ExcludedKeys
     {
-        get => (int[])this.GetValue(ExcludedKeysProperty);
+        get => (List<Key>)this.GetValue(ExcludedKeysProperty);
         set => this.SetValue(ExcludedKeysProperty, value);
     }
 
@@ -104,10 +104,6 @@ public class HotKeySelector : TextBox
 
     public HotKeySelector()
     {
-        /*IsReadOnly = true;
-        IsReadOnlyCaretVisible = false;
-        IsUndoEnabled = false;*/
-
         if (ContextMenu is not null)
         {
             ContextMenu.Visibility = Visibility.Collapsed;
@@ -123,20 +119,22 @@ public class HotKeySelector : TextBox
     private void PopulateClearKeys()
     {
         _clearKeys.Clear();
-        _clearKeys.AddRange(new List<Key> {
-             Key.Escape, Key.Space,
-             Key.Back, Key.Delete, Key.Tab,
-             Key.Insert, Key.Scroll,
-             Key.NumLock, Key.Return,
-             Key.Pause, Key.Enter, Key.Clear
+        _clearKeys.AddRange(new Key[] {
+            Key.Escape, 
+            Key.Space,
+            Key.Back, 
+            Key.Delete, 
+            Key.Tab,
+            Key.Insert, 
+            Key.Scroll,
+            Key.NumLock, 
+            Key.Return,
+            Key.CapsLock, 
+            Key.Capital,
+            Key.Pause, 
+            Key.Enter, 
+            Key.Clear
         });
-        /*_clearKeys.AddRange(
-            [Key.Escape, Key.Space,
-             Key.Back, Key.Delete, Key.Tab,
-             Key.Insert, Key.Scroll,
-             Key.NumLock, Key.Return,
-             Key.Pause, Key.Enter, Key.Clear].to
-        );*/
     }
 
     /// <summary>
@@ -275,7 +273,7 @@ public class HotKeySelector : TextBox
             UpdateControlText();
             return;
         }
-        if (ExcludedKeys.ToList().Contains((int)pressedKey))
+        if (ExcludedKeys.Contains(pressedKey))
         {
             UpdateControlText();
             return;
@@ -316,4 +314,3 @@ public class HotKeySelector : TextBox
         return expectedModifiers;
     }
 }
-

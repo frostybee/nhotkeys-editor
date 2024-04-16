@@ -9,6 +9,7 @@ using System.Windows.Input;
 
 namespace NHotkeysEditor.Controls;
 
+
 [Serializable]
 public class HotKey : IEquatable<HotKey>
 {
@@ -16,8 +17,8 @@ public class HotKey : IEquatable<HotKey>
     private const int VK_CONTROL = 17;
     private const int VK_SHIFT = 16;
     public static HotKey None = new HotKey(Key.None, ModifierKeys.None);
-    public Key Key { get; } 
-    public ModifierKeys ModifierKeys { get; } 
+    public Key Key { get; }
+    public ModifierKeys ModifierKeys { get; }
 
     public HotKey(Key key, ModifierKeys modifierKeys = ModifierKeys.None)
     {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>    
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <LangVersion>latest</LangVersion>
+    <TargetFrameworks>net481;net7.0-windows</TargetFrameworks>
+    <LangVersion>11</LangVersion>
     <Deterministic>true</Deterministic>
     <ImplicitUsings>enable</ImplicitUsings>
     <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>

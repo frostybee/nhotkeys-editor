@@ -9,19 +9,95 @@
     Title="NHotkeys Editor"
     Width="800"
     Height="450"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
     mc:Ignorable="d">
-    <Grid>
+    <Grid Margin="30,30,10,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
         <StackPanel>
+            <TextBlock
+                Margin="0,0,0,0"
+                FontWeight="DemiBold"
+                Text="Minimum required modifiers: Ctrl + Alt." />
+            <TextBlock
+                Margin="0,2,0,5"
+                FontWeight="DemiBold"
+                Text="Allowed keys: any letter, digit (0-9), or function key (F1-F9)" />
             <fb:HotKeySelector
-                Width="200"
-                Height="40"
+                Width="250"
+                Height="35"
+                HorizontalAlignment="Left"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
-                ExcludedKeys="{Binding}"
+                FontSize="15"
                 IsReadOnly="True"
                 IsReadOnlyCaretVisible="True"
                 IsUndoEnabled="False"
                 MinRequiredModifiers="CtrlAlt"
+                RangeOfAllowedKeys="LettersDigitsFunctions" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Margin="0,25,0,0">
+            <TextBlock
+                Margin="0,0,0,0"
+                FontWeight="DemiBold"
+                Text="Minimum required modifiers: Ctrl + Shift + Alt." />
+            <TextBlock
+                Margin="0,2,0,5"
+                FontWeight="DemiBold"
+                Text="Allowed keys: any key" />
+            <fb:HotKeySelector
+                Width="250"
+                Height="35"
+                HorizontalAlignment="Left"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="#faf9f7"
+                BorderBrush="Green"
+                BorderThickness="1"
+                CaretBrush="Red"
+                ExcludedKeys="{Binding ExcludedKeys}"
+                FontSize="15"
+                Foreground="Black"
+                IsReadOnly="True"
+                IsReadOnlyCaretVisible="True"
+                IsUndoEnabled="False"
+                MinRequiredModifiers="CtrlShiftAlt"
+                RangeOfAllowedKeys="All" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Margin="0,25,0,0">
+            <TextBlock
+                Margin="0,0,0,0"
+                FontWeight="DemiBold"
+                Text="Minimum required modifiers: Ctrl + Shift + Alt." />
+            <TextBlock
+                Margin="0,2,0,5"
+                FontWeight="DemiBold"
+                Text="Allowed keys: any key that is not in the supplied list of keys to be excluded" />
+            <fb:HotKeySelector
+                Width="250"
+                Height="35"
+                HorizontalAlignment="Left"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="#faf9f7"
+                BorderBrush="Green"
+                BorderThickness="1"
+                CaretBrush="Red"
+                ExcludedKeys="{Binding ExcludedKeys}"
+                FontSize="15"
+                Foreground="Black"
+                IsReadOnly="True"
+                IsReadOnlyCaretVisible="True"
+                IsUndoEnabled="False"
+                MinRequiredModifiers="CtrlShiftAlt"
                 RangeOfAllowedKeys="All" />
         </StackPanel>
     </Grid>
