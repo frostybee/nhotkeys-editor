@@ -18,13 +18,12 @@ public class HotKeySelector : TextBox
         None = 0,
         CtrlShiftAlt,
         CtrlAlt,
-        CtrlShift,
-        All,
+        CtrlShift
     }
 
     public enum AllowedKeysType
     {
-        All = 0,
+        AllKeys = 0,
         LettersDigitsFunctions
     }
 
@@ -34,7 +33,6 @@ public class HotKeySelector : TextBox
     /// </summary>
     private string UnsupportedKeyText { get; } = "Unsupported";
     private string NoneHotkeyText { get; } = "<None>";
-    private string _reasonText = string.Empty;
 
     /// <summary>
     /// Holds the list of keys that, when pressed, clear the content of this control.
@@ -297,7 +295,6 @@ public class HotKeySelector : TextBox
         var expectedModifiers = ModifierKeys.None;
         switch (MinRequiredModifiers)
         {
-            case RequiredModifiersType.All:
             case RequiredModifiersType.CtrlShiftAlt:
                 expectedModifiers |= ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt;
                 break;
