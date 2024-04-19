@@ -1,12 +1,19 @@
 # NHotkeys Editor
 
-NHotkeys Editor is a customizable shortcut editor control for WPF.
+NHotkeys Editor is a customizable shortcut editor control for **WPF**. It allows the user to enter a combination of keys that can be later associated with an action to be performed within a WPF application.
 
-**NOTE:** The `Win` key is not supported.
+This control does not support the `Win` modifier key.
 
-## Configurable Properties
+## Modifier Keys
 
-- `MinRequiredModifiers` : CtrlShiftAlt, CtrlAlt, CtrlShift
+To specify the modifier key(s) that are required to be included in a shortcut, you can assign one of the following values to the `MinRequiredModifiers` property:
+
+- `CtrlShiftAlt` : Ctrl, Shift, and Alt keys,
+- `CtrlAlt` : Ctrl and Alt,
+- `CtrlShift` : Ctrl and Shift.
+
+## Controlling Allowed Keys
+
 - `RangeOfAllowedKeys` : AllKeys, LettersDigitsFunctions
 
 ## How Do I Use the Control?
@@ -40,4 +47,3 @@ Add the following to your .xaml file.
 ## Behaviors
 
 - Pressing escape resets the control.
-  
