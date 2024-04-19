@@ -16,9 +16,9 @@ public class HotKey : IEquatable<HotKey>
     private const int VK_MENU = 18;
     private const int VK_CONTROL = 17;
     private const int VK_SHIFT = 16;
-    public static HotKey None = new HotKey(Key.None, ModifierKeys.None);
-    public Key Key { get; }
-    public ModifierKeys ModifierKeys { get; }
+    public readonly static HotKey None = new(Key.None, ModifierKeys.None);
+    public Key Key { get; } = Key.None;
+    public ModifierKeys ModifierKeys { get; } = ModifierKeys.None;
 
     public HotKey(Key key, ModifierKeys modifierKeys = ModifierKeys.None)
     {
@@ -66,10 +66,6 @@ public class HotKey : IEquatable<HotKey>
             sb.Append('+');
         }
 
-        if ((this.ModifierKeys & ModifierKeys.Windows) == ModifierKeys.Windows)
-        {
-            sb.Append("Win+");
-        }
 
         sb.Append(GetLocalizedKeyString(this.Key));
         return sb.ToString();

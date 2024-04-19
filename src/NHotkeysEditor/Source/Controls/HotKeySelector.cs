@@ -28,8 +28,7 @@ public class HotKeySelector : TextBox
     }
 
     /// <summary>
-    /// The text to be displayed in a control when an invalid or unsupported hotkey is pressed.
-    /// (Preferred default text is "(Unsupported)")
+    /// The text to be displayed in a control when an invalid or unsupported hotkey is pressed.    
     /// </summary>
     private string UnsupportedKeyText { get; } = "Unsupported";
     private string NoneHotkeyText { get; } = "<None>";
@@ -158,18 +157,14 @@ public class HotKeySelector : TextBox
         for (Key k = Key.F1; k <= Key.F12; k++)
         {
             _allowedKeys.Add(k);
-        }
-        // Add the numpad keys
-        for (Key k = Key.NumPad0; k <= Key.NumPad9; k++)
-        {
-            //_allowedKeys.Add(k);
-        }
+        }        
     }
 
     private static void OnHotKeyPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
         (sender as HotKeySelector)?.UpdateControlText();
     }
+
     public override void OnApplyTemplate()
     {
         this.GotFocus -= this.TextBoxOnGotFocus;
@@ -193,7 +188,9 @@ public class HotKeySelector : TextBox
         //TODO: the following is not necessary.
         this!.SelectionStart = this.Text.Length;
         if (this.Text.Length == 0)
-            this.SelectedHotKey = null;
+        {
+            this.SelectedHotKey = HotKey.None;
+        }            
     }
     private void TextBoxOnLostFocus(object sender, RoutedEventArgs routedEventArgs)
     {
@@ -201,6 +198,9 @@ public class HotKeySelector : TextBox
     }
     private void ComponentDispatcherOnThreadPreprocessMessage(ref MSG msg, ref bool handled)
     {
+        if (handled || msg.message != WM_Hotkey)
+            return;
+
         if (msg.message == WM_Hotkey)
         {
             // swallow all hotkeys, so our control can catch the pressedKey strokes
