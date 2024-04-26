@@ -16,34 +16,32 @@ To specify the modifier key(s) that are required to be included in a shortcut, y
 
 - `RangeOfAllowedKeys` : AllKeys, LettersDigitsFunctions
 
-## How Do I Use the Control?
-
-Add a reference to NHotkeysEditor.Controls
-
-```xml
-xmlns:fb="clr-namespace:NHotkeysEditor.Controls;assembly=NHotkeysEditor"
-```
+## Usage Example
 
 Add the following to your .xaml file.
 
 ```xml
-<fb:HotKeySelector
-    Width="250"
-    Height="35"
-    HorizontalAlignment="Left"
-    HorizontalContentAlignment="Center"
-    VerticalContentAlignment="Center"    
-    BorderThickness="1"
-    CaretBrush="Red"
-    ExcludedKeys="{Binding ExcludedKeys}"
-    FontSize="15"    
-    IsReadOnly="True"
-    IsReadOnlyCaretVisible="True"
-    IsUndoEnabled="False"
-    MinRequiredModifiers="CtrlShiftAlt"
-    RangeOfAllowedKeys="All" />
+<window
+    xmlns:fb="clr-namespace:NHotkeysEditor.Controls;assembly=NHotkeysEditor">
+    <fb:HotKeySelector
+        Width="250"
+        Height="35"
+        HorizontalAlignment="Left"
+        HorizontalContentAlignment="Center"
+        VerticalContentAlignment="Center"    
+        BorderThickness="1"
+        CaretBrush="Red"
+        ExcludedKeys="{Binding ExcludedKeys}"
+        FontSize="15"    
+        IsReadOnly="True"
+        IsReadOnlyCaretVisible="True"
+        IsUndoEnabled="False"
+        MinRequiredModifiers="CtrlShiftAlt"
+        RangeOfAllowedKeys="All" />
+</window>    
 ```
 
 ## Behaviors
 
 - Pressing escape resets the control.
+  
