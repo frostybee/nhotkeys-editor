@@ -17,13 +17,13 @@ public class HotKey : IEquatable<HotKey>
     private const int VK_CONTROL = 17;
     private const int VK_SHIFT = 16;
     public readonly static HotKey None = new(Key.None, ModifierKeys.None);
-    public Key Key { get; } = Key.None;
-    public ModifierKeys ModifierKeys { get; } = ModifierKeys.None;
+    public Key PressedKey { get; } = Key.None;
+    public ModifierKeys PressedModifiers { get; } = ModifierKeys.None;
 
     public HotKey(Key key, ModifierKeys modifierKeys = ModifierKeys.None)
     {
-        this.Key = key;
-        this.ModifierKeys = modifierKeys;
+        this.PressedKey = key;
+        this.PressedModifiers = modifierKeys;
     }
 
     public override bool Equals(object obj)
@@ -35,7 +35,7 @@ public class HotKey : IEquatable<HotKey>
     {
         unchecked
         {
-            return ((int)this.Key * 397) ^ (int)this.ModifierKeys;
+            return ((int)this.PressedKey * 397) ^ (int)this.PressedModifiers;
         }
     }
 
@@ -43,31 +43,31 @@ public class HotKey : IEquatable<HotKey>
     {
         if (other is null)
             return false;
-        return this.Key == other.Key && this.ModifierKeys == other.ModifierKeys;
+        return this.PressedKey == other.PressedKey && this.PressedModifiers == other.PressedModifiers;
     }
 
     public override string ToString()
     {
         var sb = new StringBuilder();
 
-        if ((this.ModifierKeys & ModifierKeys.Control) == ModifierKeys.Control)
+        if ((this.PressedModifiers & ModifierKeys.Control) == ModifierKeys.Control)
         {
             sb.Append(GetLocalizedKeyStringUnsafe(VK_CONTROL));
             sb.Append('+');
         }
-        if ((this.ModifierKeys & ModifierKeys.Alt) == ModifierKeys.Alt)
+        if ((this.PressedModifiers & ModifierKeys.Alt) == ModifierKeys.Alt)
         {
             sb.Append(GetLocalizedKeyStringUnsafe(VK_MENU));
             sb.Append('+');
         }
-        if ((this.ModifierKeys & ModifierKeys.Shift) == ModifierKeys.Shift)
+        if ((this.PressedModifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
         {
             sb.Append(GetLocalizedKeyStringUnsafe(VK_SHIFT));
             sb.Append('+');
         }
 
 
-        sb.Append(GetLocalizedKeyString(this.Key));
+        sb.Append(GetLocalizedKeyString(this.PressedKey));
         return sb.ToString();
     }
 

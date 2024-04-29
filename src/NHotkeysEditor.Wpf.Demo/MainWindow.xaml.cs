@@ -26,6 +26,7 @@ namespace NHotkeysEditor.Wpf.Demo
 
         private void PopulateExcludedKeys()
         {
+            // A list of keys to be excluded.
             ExcludedKeys.AddRange(
                 new Key[] {
                    Key.Up,

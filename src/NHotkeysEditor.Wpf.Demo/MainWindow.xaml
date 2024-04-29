@@ -52,6 +52,8 @@
                 Margin="0,2,0,5"
                 FontWeight="DemiBold"
                 Text="Allowed keys: any key" />
+
+            <!--  All keys are allowed settings  -->
             <fb:HotKeySelector
                 Width="250"
                 Height="35"
@@ -62,7 +64,6 @@
                 BorderBrush="Green"
                 BorderThickness="1"
                 CaretBrush="Red"
-                ExcludedKeys="{Binding ExcludedKeys}"
                 FontSize="15"
                 Foreground="Black"
                 IsReadOnly="True"

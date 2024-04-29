@@ -27,8 +27,10 @@ public class HotKeySelector : TextBox
         LettersDigitsFunctions
     }
 
+    #region Fields
+
     /// <summary>
-    /// The text to be displayed in a control when an invalid or unsupported hotkey is pressed.    
+    /// The text to be displayed in the control when an invalid or unsupported hotkey is pressed.    
     /// </summary>
     private string UnsupportedKeyText { get; } = "Unsupported";
     private string NoneHotkeyText { get; } = "<None>";
@@ -37,9 +39,12 @@ public class HotKeySelector : TextBox
     /// Holds the list of keys that, when pressed, clear the content of this control.
     /// </summary>
     private readonly List<Key> _clearKeys = new();
+    /// <summary>
+    /// Holds the list of keys that are whitelisted given the selected type 
+    /// of allowed keys.
+    /// </summary>
     private readonly List<Key> _allowedKeys = new();
-
-    #region Fields
+    
     public static readonly DependencyProperty SelectedHotKeyProperty = DependencyProperty.Register(
         nameof(SelectedHotKey),
         typeof(HotKey),
@@ -210,7 +215,7 @@ public class HotKeySelector : TextBox
 
     private void UpdateControlText()
     {
-        if (SelectedHotKey is null || SelectedHotKey.Key == Key.None)
+        if (SelectedHotKey is null || SelectedHotKey.PressedKey == Key.None)
         {
             Text = NoneHotkeyText;
             return;
