@@ -10,23 +10,31 @@ This control does not support the `Win` modifier key.
 
 ## Modifier Keys
 
-<!-- To specify the modifier key(s) that are required to be included in a shortcut, you can assign one of the following values to the `MinRequiredModifiers` property: -->
+To specify the modifier key(s) that are required to be included in a shortcut, you can assign one of the following values to the `MinRequiredModifiers` property:
 
-- `CtrlShiftAlt` : Ctrl, Shift, and Alt keys,
-- `CtrlAlt` : Ctrl and Alt,
-- `CtrlShift` : Ctrl and Shift.
+- `CtrlShiftAlt` : Requires the Ctrl, Shift, and Alt keys.
+- `CtrlAlt` : Requires the Ctrl and Alt keys
+- `CtrlShift` : Requires the Ctrl and Shift.
 
-## Controlling Allowed Keys
+## Controlling The Allowed Keys
 
-- `RangeOfAllowedKeys` : AllKeys, LettersDigitsFunctions
+The range of expected keys to be included in the combination of keys can be controlled using the `RangeOfAllowedKeys` property. One of the following values must be specified:
 
-## Usage Example
+- `AllKeys` : All keys are allowed.
+- `LettersDigitsFunctions`: Only letters, digits, and function keys (F1-F12) are allowed.
+
+### Keys to Be Excluded
+
+A list of keys to be excluded can be supplied to the control. Use the `ExcludedKeys` property to bind a list of keys as shown in the example below.  
+
+## Usage
 
 Add the following to your .xaml file.
 
 ```xml
 <window
     xmlns:fb="clr-namespace:NHotkeysEditor.Controls;assembly=NHotkeysEditor">
+    
     <fb:HotKeySelector
         Width="250"
         Height="35"
